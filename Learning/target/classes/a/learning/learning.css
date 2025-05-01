@@ -1,0 +1,37 @@
+.discountCodeCard{
+    -fx-background-color:#6E8A93;
+    -fx-background-radius: 30;
+}
+.right-bar{
+    -fx-background-color:#46585E;
+}
+
+.chosenGameCard{
+    -fx-background-color:#8AADB8;
+    -fx-background-radius: 30;
+}
+.addButton{
+    -fx-background-color:#FFFFFF;
+    -fx-background-radius: 100;
+}
+.search-button{
+    -fx-background-color:#828282;
+    -fx-background-radius: 30;
+}
+.search-box {
+    -fx-background-color:#FFFFFF;
+    -fx-background-radius: 100;
+}
+.transparent{
+    -fx-background-color: rgba(0,0,0,0);
+}
+.scroll-content-padding {
+    -fx-padding: 0 0 40 0;
+}
+.cart-badge {
+    -fx-background-color: #2ec4b6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 4 7 4 7;
+    -fx-background-radius: 50%;
+}
