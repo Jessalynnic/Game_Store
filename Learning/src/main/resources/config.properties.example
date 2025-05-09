@@ -1,0 +1,10 @@
+# Database connection configuration example
+
+# JDBC URL format: jdbc:sqlserver://<host>:<port>;databaseName=<your-db>;encrypt=true;trustServerCertificate=true
+db.url=jdbc:sqlserver://localhost:1433;databaseName=GameStoreDB;encrypt=true;trustServerCertificate=true
+
+# Replace with your SQL Server login username
+db.user=your_username
+
+# Replace with your SQL Server login password
+db.password=your_password

@@ -1,0 +1,16 @@
+# Ignore compiled class files
+target/
+
+# IntelliJ IDEA project files
+.idea/
+*.iml
+
+# Logs and temp files
+*.log
+
+# OS-specific junk
+.DS_Store
+Thumbs.db
+
+# Config
+src/main/resources/**/config.properties
