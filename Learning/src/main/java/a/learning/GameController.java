@@ -1,15 +1,17 @@
 
 package a.learning;
 
-import java.math.BigDecimal;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,16 +20,18 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 
 public class GameController implements Initializable {
-
-    @FXML
-    private Button addToCartButton;
     
     @FXML
     private Button clearButton;
+
+    @FXML
+    private VBox gameListVBox;
     
     @FXML
     private TextField discountTextField;
@@ -48,32 +52,10 @@ public class GameController implements Initializable {
     private Label grandTotalPriceLabel;
 
     @FXML
-    private TextField searchTextField;
-    
-    @FXML
-    private TextField maddenTextField;
-    
-    @FXML
-    private TextField mirageTextField;
-
-    @FXML
-    private TextField mkTextField;
-
-    
-    @FXML
-    private TextField qtyTextField;
-    
-    @FXML
-    private TextField spiderTextField;
-    
-    @FXML
     private Label subtotalTextField;
     
     @FXML
     private Label taxPriceLabel;
-    
-    @FXML
-    private TextField texasTextField;
     
     @FXML
     private Label userNameLabel;
@@ -96,7 +78,39 @@ public class GameController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        System.out.println(getClass().getResource("/a/learning/Images/Logo.png"));
+        // Retrieve the list of games from the database via GameDAO
+        List<GameItem> games = GameDAO.getAllGames();
+
+        // Set the number of cards per row and prepare the first HBox (row container)
+        int cardsPerRow = 3;
+        HBox currentRow = new HBox(20);
+        currentRow.setPadding(new Insets(10));
+
+        // Loop through the list of games and create UI cards for each one
+        for (int i = 0; i < games.size(); i++) {
+            GameItem game = games.get(i);
+            try {
+                // Load the FXML layout for a single game card
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/a/learning/GameCard.fxml"));
+                VBox card = loader.load();
+
+                // Get the controller for the game card and inject game data
+                GameCardController controller = loader.getController();
+                controller.setData(game, this);
+
+                // Add the card to the current HBox (row)
+                currentRow.getChildren().add(card);
+
+                // Once the row has 3 cards or it's the last card, add the row to the VBox
+                if ((i + 1) % cardsPerRow == 0 || i == games.size() - 1) {
+                    gameListVBox.getChildren().add(currentRow);
+                    currentRow = new HBox(20); // start a new row
+                    currentRow.setPadding(new Insets(10));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         gameName.setCellValueFactory(new PropertyValueFactory<>("gameName"));
         qty.setCellValueFactory(new PropertyValueFactory<>("Qty"));
@@ -107,7 +121,7 @@ public class GameController implements Initializable {
         int totalQty = 0;
         for (GameItem item : list) {
             try {
-                totalQty += Integer.parseInt(item.getQty());
+                totalQty += item.getQty();
             } catch (NumberFormatException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Invalid Input");
@@ -118,57 +132,12 @@ public class GameController implements Initializable {
         cartBadge.setText(String.valueOf(totalQty));
         cartBadge.setVisible(totalQty > 0);
     }
-    
-    @FXML
-    void addButtonClicked(ActionEvent event) {
-        
-        double callofdutyprice=Double.parseDouble(qtyTextField.getText())*69.99;
-        list.add(new GameItem("Call of Duty: Modern Warfare III",qtyTextField.getText(), formate.format(callofdutyprice)));
+
+    public void addToCart(GameItem item) {
+        list.add(item);
         updateCartIndicator();
-        qtyTextField.setText("");
-        
     }
-    
-    @FXML
-    void spiderAdd(ActionEvent event) {
-        double spiderPrice=Double.parseDouble(spiderTextField.getText())*69.99;
-        list.add(new GameItem("Spider-Man 2",spiderTextField.getText(), formate.format(spiderPrice)));
-        updateCartIndicator();
-        spiderTextField.setText("");
-    }
-    
-    @FXML
-    void mkAdd(ActionEvent event) {
-        double mkPrice=Double.parseDouble(mkTextField.getText())*40.99;
-        list.add(new GameItem("Mortal Kombat 1",mkTextField.getText(), formate.format(mkPrice)));
-        updateCartIndicator();
-        mkTextField.setText("");
-    }
-    
-    @FXML
-    void mirageAdd(ActionEvent event) {
-        double miragePrice=Double.parseDouble(mirageTextField.getText())*59.99;
-        list.add(new GameItem("Assassins Creed Mirage Deluxe Edition",mirageTextField.getText(), formate.format(miragePrice)));
-        updateCartIndicator();
-        mirageTextField.setText("");
-    }
-    
-    @FXML
-    void texasAdd(ActionEvent event) {
-        double texasPrice=Double.parseDouble(texasTextField.getText())*39.49;
-        list.add(new GameItem("The Texas Chain Saw Massacre",texasTextField.getText(), formate.format(texasPrice)));
-        updateCartIndicator();
-        texasTextField.setText("");
-    }
-    
-    @FXML
-    void maddenAdd(ActionEvent event) {
-        double maddenPrice=Double.parseDouble(maddenTextField.getText())*69.99;
-        list.add(new GameItem("Madden NFL 24",maddenTextField.getText(), formate.format(maddenPrice)));
-        updateCartIndicator();
-        maddenTextField.setText("");
-    }
-    
+
      @FXML
     void cartButton(MouseEvent event) {
         orderTable.setItems(list);
