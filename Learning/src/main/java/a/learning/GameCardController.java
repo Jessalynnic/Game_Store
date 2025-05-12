@@ -50,7 +50,7 @@ public class GameCardController {
             int qty = Integer.parseInt(qtyTextField.getText());
 
             // Create a cart item with total price = price * quantity
-            GameItem cartItem = new GameItem(game.getGameName(), qty, game.getPrice() * qty);
+            GameItem cartItem = new GameItem(game.getGameName(), qty, game.getPrice());
 
             // Add the item to the cart via the parent controller
             parentController.addToCart(cartItem);

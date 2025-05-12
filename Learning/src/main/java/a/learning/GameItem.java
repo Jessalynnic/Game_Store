@@ -17,10 +17,10 @@ public class GameItem {
         this.qty = 0;
     }
 
-    public GameItem(String gameName, int qty, double price) {
+    public GameItem(String gameName, int qty, double unitPrice) {
         this.gameName = gameName;
         this.qty = qty;
-        this.price = price;
+        this.price = unitPrice;
     }
 
     public String getGameName() {

@@ -32,6 +32,9 @@ public class GameController implements Initializable {
 
     @FXML
     private VBox gameListVBox;
+
+    @FXML
+    private Label discountLabel;
     
     @FXML
     private TextField discountTextField;
@@ -46,7 +49,7 @@ public class GameController implements Initializable {
     private TableColumn<GameItem, String> qty;
     
     @FXML
-    private TableColumn<GameItem, String> total;
+    private TableColumn<GameItem, Double> total;
     
     @FXML
     private Label grandTotalPriceLabel;
@@ -146,18 +149,20 @@ public class GameController implements Initializable {
     @FXML
     void calculateButtonPressed(ActionEvent event) {
         
-       double totalValue=0;
-       for (int i= 0;i<orderTable.getItems().size();i++){
-           totalValue=totalValue+Double.valueOf(total.getCellData(i));
-           }
+        double subtotal= 0;
+
+        for (GameItem item : orderTable.getItems()) {
+            subtotal += item.getTotal();
+        }
+
+        double discountAmount = 0;
         
         //Get the discount code from the discountTextField
         String discountCode = discountTextField.getText();
         
         //Check if the discount code is valid
         if (discountCode.equals("SANDYCLAWS")) {
-            // Apply the discount to the subtotal
-            totalValue *= 0.85;
+            discountAmount = subtotal * 0.15;
 
             // Create an alert dialog
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -166,20 +171,23 @@ public class GameController implements Initializable {
         
             // Show the alert dialog
             alert.show();
+            discountLabel.setText("-$" + formate.format(discountAmount));
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error: Wrong Code!");
             alert.setHeaderText("Discount NOT Applied!");
             alert.show();
         }
-        
+
+        double discountedTotal = subtotal - discountAmount;
+
         //Calculate tax
-        double tax = totalValue * 0.04;
+        double tax = discountedTotal * 0.04;
         
         //Calculate grand total
-        double grandTotal = totalValue + tax;
+        double grandTotal = discountedTotal + tax;
         
-	    subtotalTextField.setText("$"+formate.format(totalValue));
+	    subtotalTextField.setText("$"+formate.format(subtotal));
         taxPriceLabel.setText("$" + formate.format (tax));
         grandTotalPriceLabel.setText("$" + formate.format (grandTotal));
     }
@@ -193,8 +201,9 @@ public class GameController implements Initializable {
         list.clear();
         updateCartIndicator();
 
-        // Clear the subtotal, tax, and grand total labels
+        // Clear the subtotal, discount, tax, and grand total labels
         subtotalTextField.setText("");
+        discountLabel.setText("");
         taxPriceLabel.setText("");
         grandTotalPriceLabel.setText("");
 
