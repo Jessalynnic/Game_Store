@@ -3,8 +3,11 @@ package a.learning;
 
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +32,9 @@ public class GameController implements Initializable {
     
     @FXML
     private Button clearButton;
+
+    @FXML
+    private TextField searchTextField;
 
     @FXML
     private VBox gameListVBox;
@@ -71,7 +77,7 @@ public class GameController implements Initializable {
 
     
     ObservableList<GameItem> list = FXCollections.observableArrayList();
-    
+    private List<GameItem> fullGameList = new ArrayList<>();
     
     DecimalFormat formate = new DecimalFormat("0.00");
     
@@ -81,15 +87,30 @@ public class GameController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Retrieve the list of games from the database via GameDAO
-        List<GameItem> games = GameDAO.getAllGames();
+        // Saves the full list of games
+        fullGameList = GameDAO.getAllGames();
+        //Initializes rendering
+        renderGameCards(fullGameList);
 
-        // Set the number of cards per row and prepare the first HBox (row container)
+        searchTextField.textProperty().addListener((obs, oldText, newText) -> {
+            List<GameItem> filtered = fullGameList.stream()
+                    .filter(gameItem -> gameItem.getGameName().toLowerCase().contains(newText.toLowerCase()))
+                    .collect(Collectors.toList());
+            renderGameCards(filtered);
+        });
+
+        gameName.setCellValueFactory(new PropertyValueFactory<>("gameName"));
+        qty.setCellValueFactory(new PropertyValueFactory<>("Qty"));
+        total.setCellValueFactory(new PropertyValueFactory<>("Total"));
+    }
+
+    private void renderGameCards(List<GameItem> games) {
+        gameListVBox.getChildren().clear();
+
         int cardsPerRow = 3;
         HBox currentRow = new HBox(20);
         currentRow.setPadding(new Insets(10));
 
-        // Loop through the list of games and create UI cards for each one
         for (int i = 0; i < games.size(); i++) {
             GameItem game = games.get(i);
             try {
@@ -114,10 +135,6 @@ public class GameController implements Initializable {
                 e.printStackTrace();
             }
         }
-
-        gameName.setCellValueFactory(new PropertyValueFactory<>("gameName"));
-        qty.setCellValueFactory(new PropertyValueFactory<>("Qty"));
-        total.setCellValueFactory(new PropertyValueFactory<>("Total"));
     }
 
     private void updateCartIndicator() {
@@ -210,7 +227,4 @@ public class GameController implements Initializable {
         // Clear the discountTextField
         discountTextField.setText("");
     }
-    
-    
-    
 }

@@ -46,18 +46,13 @@
                   </Label>
                </children>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="50.0" prefWidth="267.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="267.0">
                <children>
-                  <TextField alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="210.0" promptText="Type here to search" styleClass="transparent">
+                  <TextField fx:id="searchTextField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="265.0" promptText="Search games ..." styleClass="transparent">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
                   </TextField>
-                  <Button mnemonicParsing="false" styleClass="search-button" text="Search" textAlignment="RIGHT" textFill="WHITE">
-                     <HBox.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </HBox.margin>
-                  </Button>
                </children>
                <VBox.margin>
                   <Insets left="25.0" right="20.0" top="4.0" />
