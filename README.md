@@ -23,14 +23,19 @@ src/
 ├── main/
 │ ├── java/a/learning/
 │ │ ├── App.java
+│ │ ├── DatabaseConnection.java
+│ │ ├── GameCardController.java
 │ │ ├── GameController.java
+│ │ ├── GameDAO.java
 │ │ ├── GameItem.java
 │ │ └── LoginController.java
 │ └── resources/a/learning/
-|   ├── Images
-│   ├── login.fxml
-│   ├── game.fxml
-│   └── learning.css
+| | ├── Images
+│ | ├── login.fxml
+│ | ├── game.fxml
+│ | ├── GameCard.fxml
+│ | └── learning.css
+| └── config.properties.example
 pom.xml
 ```
 ## 🛠️ How to Run (Maven + JavaFX 24)
