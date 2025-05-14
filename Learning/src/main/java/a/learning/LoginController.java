@@ -16,7 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class LoginController implements Initializable {
+public class LoginController {
     @FXML
     private VBox loginVBox;
 
@@ -39,9 +39,33 @@ public class LoginController implements Initializable {
     private PasswordField regPassTextField;
     
     @FXML
-    private void loginClicked(ActionEvent event) throws IOException {
-        passUsername();
-            
+    private void loginClicked(ActionEvent event) {
+        String username = userTextField.getText().trim();
+        String password = passTextField.getText().trim();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Please enter both username and password.");
+            return;
+        }
+
+        String result = UserDAO.loginUser(username, password);
+
+        switch (result) {
+            case "SUCCESS":
+                showAlert(Alert.AlertType.INFORMATION, "Login successful!");
+                loadGameStore(username);
+                break;
+            case "WRONG_PASSWORD":
+                showAlert(Alert.AlertType.ERROR, "Incorrect password.");
+                break;
+            case "USER_NOT_FOUND":
+                showAlert(Alert.AlertType.ERROR, "Username not found.");
+                break;
+            case "DB_ERROR":
+            default:
+                showAlert(Alert.AlertType.ERROR, "A database error occurred. Please try again.");
+                break;
+        }
     }
 
     public void registerBtnClicked(ActionEvent actionEvent) {
@@ -67,6 +91,9 @@ public class LoginController implements Initializable {
                 break;
             case "USER_EXISTS":
                 showAlert(Alert.AlertType.WARNING, "Username or email already exists.");
+                emailTextField.clear();
+                usernameTextField.clear();
+                regPassTextField.clear();
                 break;
             case "DB_ERROR":
             default:
@@ -91,10 +118,8 @@ public class LoginController implements Initializable {
         loginVBox.setVisible(true);
         loginVBox.setManaged(true);
     }
-    
-    public void passUsername() {
-        String username = userTextField.getText();
-        
+
+    public void loadGameStore(String username) {
         try {
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/a/learning/game.fxml"));
@@ -111,7 +136,7 @@ public class LoginController implements Initializable {
             } else {
                 System.out.println("WARNING: CSS file not found!");
             }
-            
+
             Stage stage = new Stage();
             stage.setTitle("GameZ Store");
             stage.setScene(scene);
@@ -119,13 +144,7 @@ public class LoginController implements Initializable {
         } catch (Exception e) {
             System.out.println("Error: Cant load new window");
             e.printStackTrace();
-        }    
-    }
-    
-    
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        }
     }
 
     private void showAlert(Alert.AlertType type, String message) {
