@@ -1,14 +1,12 @@
 package a.learning;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.Node;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
@@ -53,6 +51,12 @@ public class LoginController {
         switch (result) {
             case "SUCCESS":
                 showAlert(Alert.AlertType.INFORMATION, "Login successful!");
+
+                // Closing the login window
+                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                currentStage.close();
+
+                // Opening the Game Store window
                 loadGameStore(username);
                 break;
             case "WRONG_PASSWORD":
