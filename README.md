@@ -32,6 +32,7 @@ src/
 │ │ ├── GameCardController.java
 │ │ ├── GameController.java
 │ │ ├── GameDAO.java
+│ │ ├── GameDB.sql
 │ │ ├── GameItem.java
 │ │ ├── LoginController.java
 │ │ ├── User.java
