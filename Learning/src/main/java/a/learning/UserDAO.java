@@ -43,4 +43,32 @@ public class UserDAO {
             return "DB_ERROR";
         }
     }
+
+    public static String loginUser(String username, String password) {
+        String sql = "SELECT password_hash FROM users WHERE username = ?";
+
+        try(
+           Connection conn = DatabaseConnection.getConnection();
+           PreparedStatement stmt = conn.prepareStatement(sql);
+        ) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            if (!rs.next()) {
+                return "USER_NOT_FOUND";
+            }
+
+            String storedHash = rs.getString("password_hash");
+            String enteredHash = DigestUtils.sha256Hex(password);
+
+            if (storedHash.equals(enteredHash)) {
+                return "SUCCESS";
+            } else {
+                return "WRONG_PASSWORD";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "DB_ERROR";
+        }
+    }
 }
